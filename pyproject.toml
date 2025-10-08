@@ -3,6 +3,4 @@ name = "master4"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.12"
-dependencies = [
-    "hid",
-]
+dependencies = ["hid", "dbus-python>=1.4.0", "pygobject>=3.54.3"]
