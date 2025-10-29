@@ -30,6 +30,24 @@ def monitor_notifications(device):
                         logging.info("✓ Haptic feedback triggered!")
                     except Exception as e:
                         logging.error("Failed to trigger haptic: %s", e)
+                        if "No such device" in str(e):
+                            logging.info("Trying to reconnect MX Master 4...")
+                            new_device = MXMaster4.find()
+                            if new_device:
+                                try:
+                                    device.__exit__(None, None, None)
+                                except Exception:
+                                    pass
+                                device = new_device
+                                device.__enter__()
+                                logging.info("Reconnected to MX Master 4.")
+                                try:
+                                    device.hidpp(FunctionID.Haptic, 0)
+                                    logging.info("✓ Haptic feedback triggered after reconnect!")
+                                except Exception as e2:
+                                    logging.error("Failed again after reconnect: %s", e2)
+                            else:
+                                logging.error("MX Master 4 not found on reconnect attempt.")
     except KeyboardInterrupt:
         process.terminate()
         raise
